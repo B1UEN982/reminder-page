@@ -1,0 +1,89 @@
+// ==UserScript==
+// @name         Bilibili 自律跳转
+// @namespace    https://github.com/B1UEN982
+// @version      2.0
+// @description  B 站首页自律拦截与限时放行
+// @match        https://www.bilibili.com/*
+// @run-at       document-start
+// @grant        GM_getValue
+// @grant        GM_setValue
+// ==/UserScript==
+
+(() => {
+  'use strict';
+
+  const REMIND = 'https://b1uen982.github.io/reminder-page/';
+  const KEY = 'bili_allow_until';
+  const now = Date.now();
+  let until = Number(GM_getValue(KEY, 0));
+
+  /* 1. 处理 allow 参数 */
+  const p = new URLSearchParams(location.search);
+  if (p.has('allow')) {
+    const m = +p.get('allow');
+    if (m > 0 && m <= 1440) {
+      GM_setValue(KEY, Date.now() + m * 60000);
+    }
+    p.delete('allow');
+    history.replaceState(null, '', location.pathname + (p.toString() ? '?' + p : ''));
+  }
+
+  /* 2. 放行期：悬浮球 */
+  if (now < until) {
+    const mount = () => {
+      if (!document.body || document.getElementById('bili-ball')) {
+        return setTimeout(mount, 50);
+      }
+
+      const ball = document.createElement('div');
+      ball.id = 'bili-ball';
+      ball.style.cssText = `
+        position:fixed;right:0;top:40%;
+        width:60px;height:60px;
+        background:linear-gradient(135deg,#fb7299,#ff3867);
+        color:#fff;border-radius:30px 0 0 30px;
+        font-size:12px;font-weight:bold;
+        display:flex;flex-direction:column;
+        align-items:center;justify-content:center;
+        cursor:pointer;z-index:99999;
+        user-select:none;
+        box-shadow:0 2px 8px rgba(0,0,0,.2);
+      `;
+
+      const fmt = t => {
+        t = Math.max(0, t / 1000 | 0);
+        return `${t/60|0}:${String(t%60).padStart(2,'0')}`;
+      };
+
+      const tick = () => {
+        const left = GM_getValue(KEY, 0) - Date.now();
+        if (left <= 0) {
+          clearInterval(timer);
+          ball.remove();
+          location.replace(REMIND);
+          return;
+        }
+        ball.innerHTML = `<div>${fmt(left)}</div><div style="font-size:9px;opacity:.8">剩余</div>`;
+      };
+
+      ball.onclick = () => {
+        if (confirm('提前结束放行？')) {
+          GM_setValue(KEY, 0);
+          location.replace(REMIND);
+        }
+      };
+
+      document.body.appendChild(ball);
+      tick();
+      const timer = setInterval(tick, 1000);
+    };
+
+    mount();
+    return;
+  }
+
+  /* 3. 非放行期：首页拦截 */
+  if (location.pathname === '/' || location.pathname === '') {
+    location.replace(REMIND);
+  }
+})();
