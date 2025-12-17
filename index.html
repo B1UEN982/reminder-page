@@ -20,14 +20,12 @@
   <h1>停一下</h1>
   <p>你现在打开 B 站，是有明确目的的吗？</p>
 
-  <button onclick="allow(10)">放行 10 分钟</button>
-  <button onclick="allow(30)">放行 30 分钟</button>
+  <button onclick="go(10)">放行 10 分钟</button>
+  <button onclick="go(30)">放行 30 分钟</button>
 
   <script>
-    function allow(min) {
-      const until = Date.now() + min * 60 * 1000;
-      localStorage.setItem("bili_allow_until", until);
-      location.href = "https://www.bilibili.com/";
+    function go(min) {
+      location.href = "https://www.bilibili.com/?allow=" + min;
     }
   </script>
 </html>
