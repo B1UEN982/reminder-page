@@ -1,2 +1,33 @@
-<h1>别刷视频了</h1>
-<p>你本来不是为了这个打开浏览器。</p>
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <meta charset="utf-8" />
+  <title>提醒</title>
+
+  <style>
+    body {
+      font-family: system-ui, sans-serif;
+      text-align: center;
+      margin-top: 20vh;
+    }
+    button {
+      margin: 8px;
+      padding: 10px 18px;
+      font-size: 16px;
+      cursor: pointer;
+    }
+  </style>
+
+  <h1>停一下</h1>
+  <p>你现在打开 B 站，是有明确目的的吗？</p>
+
+  <button onclick="allow(10)">放行 10 分钟</button>
+  <button onclick="allow(30)">放行 30 分钟</button>
+
+  <script>
+    function allow(min) {
+      const until = Date.now() + min * 60 * 1000;
+      localStorage.setItem("bili_allow_until", until);
+      location.href = "https://www.bilibili.com/";
+    }
+  </script>
+</html>
