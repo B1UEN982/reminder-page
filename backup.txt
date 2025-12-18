@@ -1,9 +1,10 @@
 // ==UserScript==
 // @name         Bilibili 自律跳转
 // @namespace    https://github.com/B1UEN982
-// @version      2.1
+// @version      2.2
 // @description  B 站访问自律拦截与限时放行
 // @match        https://www.bilibili.com/*
+// @match        https://live.bilibili.com/*
 // @run-at       document-start
 // @grant        GM_getValue
 // @grant        GM_setValue
