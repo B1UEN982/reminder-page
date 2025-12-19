@@ -5,6 +5,7 @@
 // @description  B 站访问自律拦截与限时放行
 // @match        https://www.bilibili.com/*
 // @match        https://live.bilibili.com/*
+// @match        https://space.bilibili.com/*
 // @run-at       document-start
 // @grant        GM_getValue
 // @grant        GM_setValue
