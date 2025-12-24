@@ -109,7 +109,7 @@
     return;
   }
 
-  /* ========== 3. 非放行期：全站拦截 ========== */
+  /* ========== 3. 非放行期：全站拦截 =========== */
   if (!location.href.startsWith(REMIND)) {
     GM_setValue(LAST, location.href);
   }
